@@ -59,17 +59,25 @@ async function run() {
     });
 
     app.get("/myreviews", async (req, res) => {
-      const query = {};
-      const cursor = reviewCollection.find(query).limit(3);
-      const services = await cursor.toArray();
-      res.send(services);
+      //   console.log(req.query.userID);
+      const cursor = reviewCollection.find({});
+      const reviews = await cursor.toArray();
+      let myReviews = [];
+      reviews.forEach((review) => {
+        console.log(review.reviewerID);
+        if (review.reviewerID == req.query.userID) {
+          //   console.log(review.reviewText);
+          myReviews.push(review);
+        }
+      });
+      res.send(myReviews);
     });
 
     app.post("/reviewsubmit", async (req, res) => {
       const review = req.body;
       //   console.log(review);
       const result = await reviewCollection.insertOne(review);
-      res.send(result);
+      ~res.send(result);
     });
   } finally {
   }
